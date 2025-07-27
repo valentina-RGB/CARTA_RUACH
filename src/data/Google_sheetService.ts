@@ -17,8 +17,6 @@ class SheetsService {
   private convertDriveImageUrl(url: string): string {
     if (!url) return "/api/placeholder/300/300";
 
-    console.log("🔗 URL original:", url);
-
     // Si ya es un enlace directo de Drive, usar proxy
     if (url.includes("drive.google.com/uc?")) {
       const proxyUrl = `https://images.weserv.nl/?url=${encodeURIComponent(
