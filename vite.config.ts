@@ -34,22 +34,31 @@ export default defineConfig({
     }),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'robots.txt', 'apple-touch-icon.png'],
+      includeAssets: ['favicon.svg', 'robots.txt', 'apple-touch-icon.svg', 'pwa-192x192.svg', 'pwa-512x512.svg'],
       manifest: {
         name: 'Carta Ruach - Menú Digital',
-        short_name: 'MiPWA',
-        description: 'Una PWA en React + TS que funciona offline',
-        theme_color: '#0f172a',
+        short_name: 'Carta Ruach',
+        description: 'Menú digital interactivo para restaurante con productos frescos',
+        theme_color: '#f97316',
+        background_color: '#ffffff',
+        display: 'standalone',
+        start_url: '/',
         icons: [
           {
-            src: 'pwa-192x192.png',
+            src: 'pwa-192x192.svg',
             sizes: '192x192',
-            type: 'image/png'
+            type: 'image/svg+xml'
           },
           {
-            src: 'pwa-512x512.png',
+            src: 'pwa-512x512.svg',
             sizes: '512x512',
-            type: 'image/png'
+            type: 'image/svg+xml'
+          },
+          {
+            src: 'pwa-192x192.svg',
+            sizes: '192x192',
+            type: 'image/svg+xml',
+            purpose: 'maskable'
           }
         ]
       },
