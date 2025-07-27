@@ -88,7 +88,7 @@ export default function ShopPage() {
           title="Actualizar menú"
         >
           <RefreshCw
-            className={`w-4 h-4 text-white/80 ${
+            className={`w-4 h-4 text-gray-700 ${
           loading ? "animate-spin" : ""
             }`}
           />

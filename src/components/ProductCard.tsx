@@ -8,6 +8,15 @@ interface ProductCardProps {
   index: number
 }
 
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(price)
+  }
+
 export const ProductCard = ({ product, onProductClick, index }: ProductCardProps) => {
   return (
     <motion.div
@@ -70,7 +79,7 @@ export const ProductCard = ({ product, onProductClick, index }: ProductCardProps
         <div className="flex items-center justify-between">
           <div className="flex items-baseline gap-2">
             <span className="text-2xl font-bold text-amber-800">
-              ${product.price.toLocaleString('es-CO', { minimumFractionDigits: 0 })}
+             {formatPrice(product.price)}
             </span>
             {product.originalPrice && (
               <span className="text-amber-600/50 text-sm line-through">
