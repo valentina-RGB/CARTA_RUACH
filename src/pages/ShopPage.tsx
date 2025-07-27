@@ -54,7 +54,7 @@ export default function ShopPage() {
     <div className="min-h-screen">
       {/* Hero Header */}
       <motion.div
-        className="relative bg-black mx-auto rounded-md"
+        className="relative dark:bg-black mx-auto rounded-md"
         initial={{ y: -10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6 }}
@@ -69,14 +69,16 @@ export default function ShopPage() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.4 }}
         >
-            <h1 className="text-xl font-boldcuale text-white/80 mb-1 tracking-wide">
+            {/* <h1 className="text-xl font-boldcuale text-white/80 mb-1 tracking-wide">
             RESTAURANTE RUACH
-            </h1>
-          <div className="flex items-center justify-center gap-2">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            <span className="text-green-400 text-xs font-medium">
+            </h1> */}
+          <div className="flex items-center justify-center  gap-2">
+            <div className="bg-green-400 flex items-center p-2  gap-2 rounded-2xl">
+              <div className="w-2 h-2 bg-green-700 rounded-full animate-pulse"></div>
+            <span className="text-green-950 text-xs font-medium">
           Menú en tiempo real
             </span>
+            </div>
           </div>
         </motion.div>
 
