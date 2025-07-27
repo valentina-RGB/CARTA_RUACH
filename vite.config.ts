@@ -39,19 +39,7 @@ export default defineConfig({
         name: 'Carta Ruach - Menú Digital',
         short_name: 'MiPWA',
         description: 'Una PWA en React + TS que funciona offline',
-        theme_color: '#0f172a',
-        icons: [
-          {
-            src: 'pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
-          }
-        ]
+        theme_color: '#0f172a'
       },
       workbox: {
         navigateFallback: '/offline.html',
