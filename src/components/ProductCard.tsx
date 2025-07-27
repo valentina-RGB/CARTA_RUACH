@@ -79,7 +79,7 @@ export const ProductCard = ({ product, onProductClick, index }: ProductCardProps
         <div className="flex items-center justify-between">
           <div className="flex items-baseline gap-2">
             <span className="text-2xl font-bold text-amber-800">
-             {formatPrice(product.price)}
+             {product.price ?formatPrice(product.price): "Ver detalles"}
             </span>
             {product.originalPrice && (
               <span className="text-amber-600/50 text-sm line-through">
