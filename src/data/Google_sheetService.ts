@@ -24,7 +24,6 @@ class SheetsService {
       const proxyUrl = `https://images.weserv.nl/?url=${encodeURIComponent(
         url
       )}&w=400&h=400&fit=cover`;
-      console.log("🖼️ URL con proxy:", proxyUrl);
       return proxyUrl;
     }
 
@@ -35,7 +34,6 @@ class SheetsService {
       const proxyUrl = `https://images.weserv.nl/?url=${encodeURIComponent(
         directUrl
       )}&w=400&h=400&fit=cover`;
-      console.log("🖼️ URL convertida con proxy:", proxyUrl);
       return proxyUrl;
     }
 

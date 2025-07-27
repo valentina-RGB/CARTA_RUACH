@@ -249,25 +249,25 @@ export const ProductDetailModal = ({
                         </h3>
                         <div className="grid grid-cols-4 gap-3">
                           {product.nutritionalInfo && product.nutritionalInfo.kcal > 0 && (
-                            <div className="text-center p-3 bg-blue-50 rounded-xl">
+                            <div className="text-center p-3 bg-blue-50 w-fit rounded-xl">
                               <div className="text-xs text-blue-600 font-medium">Calorías</div>
                               <div className="text-lg font-bold text-blue-800">{product.nutritionalInfo.kcal}</div>
                             </div>
                           )}
                           {product.nutritionalInfo && product.nutritionalInfo.carbs > 0 && (
-                            <div className="text-center p-3 bg-green-50 rounded-xl">
+                            <div className="text-center p-3 bg-green-50  w-fit  rounded-xl">
                               <div className="text-xs text-green-600 font-medium">Carbos</div>
                               <div className="text-lg font-bold text-green-800">{product.nutritionalInfo.carbs}g</div>
                             </div>
                           )}
                           {product.nutritionalInfo && product.nutritionalInfo.protein > 0 && (
-                            <div className="text-center p-3 bg-purple-50 rounded-xl">
+                            <div className="text-center p-3 bg-purple-50  w-fit  rounded-xl">
                               <div className="text-xs text-purple-600 font-medium">Proteína</div>
                               <div className="text-lg font-bold text-purple-800">{product.nutritionalInfo.protein}g</div>
                             </div>
                           )}
                           {product.nutritionalInfo && product.nutritionalInfo.sugar > 0 && (
-                            <div className="text-center p-3 bg-pink-50 rounded-xl">
+                            <div className="text-center p-3 bg-pink-50  w-fit  rounded-xl">
                               <div className="text-xs text-pink-600 font-medium">Azúcar</div>
                               <div className="text-lg font-bold text-pink-800">{product.nutritionalInfo.sugar}g</div>
                             </div>
