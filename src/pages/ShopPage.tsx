@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, RefreshCw } from "lucide-react";
+import {  RefreshCw } from "lucide-react";
 import type { Product } from "@/types/product";
 import { ProductCard } from "@/components/ProductCard";
 import { CategoryFilter } from "@/components/CategoryFilter";
@@ -17,9 +17,7 @@ export default function ShopPage() {
     products,
     categories,
     loading,
-    error,
     validCategories,
-    usingSheets,
     refreshProducts,
   } = useProducts(); // 👈 Usar Google Sheets
   // const [pay, setpay] = useState(false)
