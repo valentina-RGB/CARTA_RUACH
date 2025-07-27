@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { sheetsService } from "@/data/Google_sheetService";
 import { mockProducts } from "@/data/products"; // Fallback
 import type { Product } from "@/types/product";
@@ -11,7 +11,7 @@ export const useProducts = () => {
   const [error, setError] = useState<string | null>(null);
   const [usingSheets, setUsingSheets] = useState(false);
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -44,9 +44,9 @@ export const useProducts = () => {
     } finally {
       setLoading(false);
     }
-  };
+  },[]);
 
-  const getValidCategories = () => {
+  const getValidCategories = useMemo(() => {
     if (categories.length === 0) return [];
 
     const productCategories = [...new Set(products.map((p) => p.category))];
@@ -55,12 +55,12 @@ export const useProducts = () => {
       (category) =>
         category.id === "all" || productCategories.includes(category.id)
     );
-  };
+  }, [categories, products]);
 
   // Solo cargar una vez al montar el componente
   useEffect(() => {
     loadData();
-  }, []); // 👈 Sin dependencias, solo se ejecuta una vez
+  }, [loadData]); // 👈 loadData memoizado con useCallback
 
   return {
     products,
@@ -68,7 +68,7 @@ export const useProducts = () => {
     loading,
     error,
     usingSheets,
-    validCategories: getValidCategories(),
+    validCategories: getValidCategories,
     refreshProducts: loadData, // 👈 Manual refresh cuando lo necesites
   };
 };

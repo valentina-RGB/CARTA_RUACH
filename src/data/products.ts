@@ -6,7 +6,7 @@ export const mockProducts: Product[] = [
     name: 'Almuerzo con Cerdo',
     description: 'Savor the authentic essence of our Almuerzo con Res — soft inside, irresistibly flaky outside. Expertly crafted from premium ingredients. It\'s an authentic taste of Parisian bliss to remember and savor. Elevate your moments with the ultimate French pastry experience.',
     price: 18.000,
-    image: '/src/assets/carne_cerdo.png',
+    image: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400&h=400&fit=crop&crop=center',
     category: 'croissant',
     weight: '100g',
     nutritionalInfo: {

@@ -7,6 +7,9 @@ const SPREADSHEET_ID = "1LyOCdes0cdgrYZIGPTeeSSWiKciJfPgLYaS7Mtxda5o"; // 👈 C
 
 class SheetsService {
   private doc: GoogleSpreadsheet;
+  private productsCache: { data: Product[], timestamp: number } | null = null;
+  private categoriesCache: { data: Category[], timestamp: number } | null = null;
+  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
 
   constructor() {
     this.doc = new GoogleSpreadsheet(SPREADSHEET_ID, {
@@ -14,29 +17,39 @@ class SheetsService {
     });
   }
 
+  private isCacheValid(cache: { timestamp: number } | null): boolean {
+    if (!cache) return false;
+    return Date.now() - cache.timestamp < this.CACHE_DURATION;
+  }
+
   private convertDriveImageUrl(url: string): string {
     if (!url) return "/api/placeholder/300/300";
 
-    // Si ya es un enlace directo de Drive, usar proxy
+    // Si ya es un enlace directo de Drive, usar proxy optimizado
     if (url.includes("drive.google.com/uc?")) {
       const proxyUrl = `https://images.weserv.nl/?url=${encodeURIComponent(
         url
-      )}&w=400&h=400&fit=cover`;
+      )}&w=400&h=400&fit=cover&q=80&output=webp`;
       return proxyUrl;
     }
 
-    // Convertir enlace normal de Drive a enlace con proxy
+    // Convertir enlace normal de Drive a enlace con proxy optimizado
     const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
     if (match) {
       const directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
       const proxyUrl = `https://images.weserv.nl/?url=${encodeURIComponent(
         directUrl
-      )}&w=400&h=400&fit=cover`;
+      )}&w=400&h=400&fit=cover&q=80&output=webp`;
       return proxyUrl;
     }
 
-    // Si es una URL completa de otra fuente, devolverla tal como está
-    if (url.startsWith("http")) return url;
+    // Si es una URL completa de otra fuente, usar proxy también
+    if (url.startsWith("http")) {
+      const proxyUrl = `https://images.weserv.nl/?url=${encodeURIComponent(
+        url
+      )}&w=400&h=400&fit=cover&q=80&output=webp`;
+      return proxyUrl;
+    }
 
     // Si es una ruta relativa, devolverla tal como está
     return url;
@@ -55,6 +68,12 @@ class SheetsService {
 
   async loadCategories(): Promise<Category[]> {
     try {
+      // Verificar cache primero
+      if (this.isCacheValid(this.categoriesCache)) {
+        console.log("📋 Usando categorías desde cache");
+        return this.categoriesCache!.data;
+      }
+
       await this.doc.loadInfo();
 
       console.log("📊 Google Sheet conectado:", this.doc.title);
@@ -79,13 +98,21 @@ class SheetsService {
         return this.getDefaultCategories();
       }
 
-      return rows.map((row) => ({
+      const categories = rows.map((row) => ({
         id: row.get("id") || "",
         name: row.get("name") || "",
         icon: row.get("icon") || "🍽️",
         color: row.get("color") || "#f97316",
         description: row.get("description") || "",
       }));
+
+      // Guardar en cache
+      this.categoriesCache = {
+        data: categories,
+        timestamp: Date.now()
+      };
+
+      return categories;
     } catch (error) {
       console.error("❌ Error loading categories from Google Sheets:", error);
       return this.getDefaultCategories();
@@ -107,6 +134,12 @@ class SheetsService {
   //PRODUCT
   async loadProducts(): Promise<Product[]> {
     try {
+      // Verificar cache primero
+      if (this.isCacheValid(this.productsCache)) {
+        console.log("📋 Usando productos desde cache");
+        return this.productsCache!.data;
+      }
+
       // Autenticación simple usando API key pública
       await this.doc.loadInfo();
       console.log("📊 Google Sheet conectado:", this.doc.title);
@@ -115,7 +148,7 @@ class SheetsService {
       await sheet.loadHeaderRow();
       const rows = await sheet.getRows();
 
-      return rows.map((row) => ({
+      const products = rows.map((row) => ({
         id: row.get("id") || Date.now().toString(),
         name: row.get("name") || "",
         description: row.get("description") || "",
@@ -140,6 +173,14 @@ class SheetsService {
         originalPrice: parseFloat(row.get("originalPrice")) || undefined,
         discount: parseInt(row.get("discount")) || undefined,
       }));
+
+      // Guardar en cache
+      this.productsCache = {
+        data: products,
+        timestamp: Date.now()
+      };
+
+      return products;
     } catch (error) {
       console.error("Error loading from Google Sheets:", error);
       // Fallback a datos mock si falla

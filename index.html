@@ -1,13 +1,73 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Restaurante Ruach</title>
-  </head>
+    
+    <!-- Preconnect para recursos externos -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://images.weserv.nl">
+    <link rel="preconnect" href="https://drive.google.com">
+    
+    <!-- DNS prefetch para dominios externos -->
+    <link rel="dns-prefetch" href="//googleapis.com">
+    <link rel="dns-prefetch" href="//gstatic.com">
+    
+    <!-- Meta tags para SEO y rendimiento -->
+    <meta name="description" content="Restaurante Ruach - Carta digital interactiva con productos frescos y especialidades culinarias">
+    <meta name="keywords" content="restaurante, carta digital, menu, comida, especialidades">
+    <meta name="theme-color" content="#f97316">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Restaurante Ruach">
+    <meta property="og:description" content="Carta digital interactiva con productos frescos">
+    <meta property="og:type" content="website">
+    
+    <!-- Preload de recursos críticos -->
+    <link rel="preload" href="/src/index.css" as="style">
+    <link rel="preload" href="/src/main.tsx" as="script">
+    
+    <!-- Favicon optimizado -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>">
+    
+    <title>Restaurante Ruach - Carta Digital</title>
+    
+   
   <body>
+   
     <div id="root"></div>
+    
+    <!-- Script optimizado con manejo de errores -->
+    <script type="module">
+      // Remover loading screen cuando la app cargue
+      window.addEventListener('load', () => {
+        const loadingScreen = document.getElementById('loading-screen');
+        if (loadingScreen) {
+          loadingScreen.classList.add('fade-out');
+          setTimeout(() => {
+            loadingScreen.remove();
+          }, 500);
+        }
+      });
+      
+      // Manejo de errores de carga
+      window.addEventListener('error', (e) => {
+        console.error('Error de carga:', e);
+      });
+      
+      // Performance timing
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          const perfData = performance.getEntriesByType('navigation')[0];
+          console.log('Performance:', {
+            loadTime: perfData.loadEventEnd - perfData.loadEventStart,
+            domReady: perfData.domContentLoadedEventEnd - perfData.navigationStart,
+            totalTime: perfData.loadEventEnd - perfData.navigationStart
+          });
+        }, 100);
+      });
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

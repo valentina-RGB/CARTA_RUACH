@@ -5,6 +5,7 @@ import type { Product } from "@/types/product";
 import { ProductCard } from "@/components/ProductCard";
 import { CategoryFilter } from "@/components/CategoryFilter";
 import { ProductDetailModal } from "@/components/ProductDetailModal";
+import { LoadingSkeleton } from "@/components/LoadingSkeleton";
 import { useProducts } from "@/hooks/useProducts";
 import type { ProductCategory } from "@/types/category";
 
@@ -153,28 +154,34 @@ export default function ShopPage() {
           </div>
 
           {/* Products Grid */}
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3 max-w-7xl mx-auto">
-            {filteredProducts.map((product, index) => (
-              <motion.div
-                key={product.id}
-                initial={{ y: 30, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.4, delay: index * 0.08 }}
-                className="group"
-              >
-                <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 group-hover:border-amber-200">
-                  <ProductCard
-                    product={product}
-                    onProductClick={handleProductSelect}
-                    index={index}
-                  />
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          {loading ? (
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3 max-w-7xl mx-auto">
+              <LoadingSkeleton type="card" count={6} />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3 max-w-7xl mx-auto">
+              {filteredProducts.map((product, index) => (
+                <motion.div
+                  key={product.id}
+                  initial={{ y: 30, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.4, delay: index * 0.08 }}
+                  className="group"
+                >
+                  <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 group-hover:border-amber-200">
+                    <ProductCard
+                      product={product}
+                      onProductClick={handleProductSelect}
+                      index={index}
+                    />
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
 
           {/* Empty State */}
-          {filteredProducts.length === 0 && (
+          {!loading && filteredProducts.length === 0 && (
             <motion.div
               className="text-center py-16"
               initial={{ opacity: 0 }}
