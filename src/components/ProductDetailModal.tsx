@@ -203,7 +203,7 @@ export const ProductDetailModal = ({
                                 {size.name}
                               </div>
                               <div className="text-lg font-semibold text-gray-900">
-                                {size.value}
+                                $ {formatPrice(Number(size.value))}
                               </div>
                             </motion.div>
                           ))}
