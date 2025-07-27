@@ -161,7 +161,7 @@ export const ProductDetailModal = ({
 
                       <div className="flex items-center gap-2 mb-4">
                         <span className="text-2xl font-bold text-orange-500">
-                          {formatPrice(product.price)}
+                         {product.price? "": formatPrice(product.price)}
                         </span>
                         {product.originalPrice && product.originalPrice > product.price && (
                           <span className="text-lg text-gray-500 line-through">
