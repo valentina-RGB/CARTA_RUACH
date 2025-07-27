@@ -8,7 +8,9 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "ui": "npx shadcn@latest add"
+    "ui": "npx shadcn@latest add",
+    "clean": "powershell -ExecutionPolicy Bypass -File scripts/clean.ps1",
+    "clean:build": "npm run clean && npm run build"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.14",
@@ -19,6 +21,7 @@
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.9",
     "google-spreadsheet": "^4.1.5",
+    "lodash-es": "^4.17.21",
     "lucide-react": "^0.526.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -43,6 +46,7 @@
     "tw-animate-css": "^1.3.6",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.35.1",
-    "vite": "^7.0.4"
+    "vite": "^7.0.4",
+    "vite-plugin-compression": "^0.5.1"
   }
 }

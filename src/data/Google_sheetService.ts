@@ -98,8 +98,8 @@ class SheetsService {
         return this.getDefaultCategories();
       }
 
-      const categories = rows.map((row) => ({
-        id: row.get("id") || "",
+      const categories = rows.map((row, index) => ({
+        id: row.get("id") || `category-${Date.now()}-${index}`,
         name: row.get("name") || "",
         icon: row.get("icon") || "🍽️",
         color: row.get("color") || "#f97316",
@@ -148,8 +148,8 @@ class SheetsService {
       await sheet.loadHeaderRow();
       const rows = await sheet.getRows();
 
-      const products = rows.map((row) => ({
-        id: row.get("id") || Date.now().toString(),
+      const products = rows.map((row, index) => ({
+        id: row.get("id") || `product-${Date.now()}-${index}`,
         name: row.get("name") || "",
         description: row.get("description") || "",
         price: this.parsePrice(row.get("price")) || 0,

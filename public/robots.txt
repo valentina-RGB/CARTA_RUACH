@@ -1,0 +1,20 @@
+# Robots.txt para Carta Ruach
+# Permite a todos los robots rastrear todo el sitio
+
+User-agent: *
+Allow: /
+
+# Sitemap (opcional - puedes añadirlo cuando tengas uno)
+# Sitemap: https://tu-dominio.com/sitemap.xml
+
+# Bloquear archivos innecesarios para SEO
+Disallow: /src/
+Disallow: /node_modules/
+Disallow: /*.json$
+Disallow: /*.map$
+
+# Permitir específicamente archivos importantes
+Allow: /assets/
+Allow: /images/
+Allow: /*.css$
+Allow: /*.js$

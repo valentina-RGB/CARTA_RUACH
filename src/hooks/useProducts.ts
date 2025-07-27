@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { sheetsService } from "@/data/Google_sheetService";
+import { loadProducts, loadCategories } from "@/services/sheetsWrapper";
 import { mockProducts } from "@/data/products"; // Fallback
+import { validateUniqueIds } from "@/utils/validateIds";
 import type { Product } from "@/types/product";
 import type { Category } from "@/types/category";
 
@@ -17,12 +18,18 @@ export const useProducts = () => {
       setError(null);
 
       const [sheetsCategories, sheetsProducts] = await Promise.all([
-        sheetsService.loadCategories(),
-        sheetsService.loadProducts(),
+        loadCategories(),
+        loadProducts(),
       ]);
 
       setCategories(sheetsCategories);
       console.log("📂 Categorías cargadas:", sheetsCategories.length);
+
+      // Validar IDs únicos en desarrollo
+      if (process.env.NODE_ENV === 'development') {
+        validateUniqueIds.products(sheetsProducts);
+        validateUniqueIds.categories(sheetsCategories);
+      }
 
       if (sheetsProducts.length > 0) {
         setProducts(sheetsProducts);

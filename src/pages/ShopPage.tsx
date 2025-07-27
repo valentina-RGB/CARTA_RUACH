@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useDeferredValue, startTransition, useCallback } from "react";
 import { motion } from "framer-motion";
-import {  RefreshCw } from "lucide-react";
+import { RefreshCw } from "@/common/ui/icons";
 import type { Product } from "@/types/product";
 import { ProductCard } from "@/components/ProductCard";
 import { CategoryFilter } from "@/components/CategoryFilter";
@@ -21,20 +21,29 @@ export default function ShopPage() {
     validCategories,
     refreshProducts,
   } = useProducts(); // 👈 Usar Google Sheets
+  
+  // Optimización: Usar deferred value para filtros no críticos
+  const deferredCategory = useDeferredValue(selectedCategory);
+  
   // const [pay, setpay] = useState(false)
   // const { cartItems, addToCart } = useCart()
 
   const filteredProducts =
-    selectedCategory === "all"
+    deferredCategory === "all"
       ? products
-      : products.filter((product) => product.category === selectedCategory);
+      : products.filter((product) => product.category === deferredCategory);
 
   // const cartItemsCount = cartItems.reduce((total, item) => total + item.quantity, 0)
 
-  const handleProductSelect = (product: Product) => {
+  const handleProductSelect = useCallback((product: Product) => {
     setSelectedProduct(product);
-    console.log("Holaaa", selectedProduct);
-  };
+  }, []);
+  
+  const handleCategoryChange = useCallback((category: ProductCategory) => {
+    startTransition(() => {
+      setSelectedCategory(category);
+    });
+  }, []);
 
   const currentCategory = categories.some((cat) => cat.id === selectedCategory)
     ? selectedCategory
@@ -117,7 +126,7 @@ export default function ShopPage() {
               </div> */}
               <CategoryFilter
                 selectedCategory={currentCategory}
-                onCategoryChange={setSelectedCategory}
+                onCategoryChange={handleCategoryChange}
                 categories={validCategories}
               />
             </div>

@@ -1,5 +1,5 @@
 import type { Product } from '@/types/product'
-import { Beef, Soup } from 'lucide-react'
+import { Beef, Soup } from '@/common/ui/icons'
 export const mockProducts: Product[] = [
   {
     id: '1',

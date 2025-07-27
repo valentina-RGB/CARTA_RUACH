@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
+import { X } from "@/common/ui/icons";
 import { Badge } from "@/common/ui/badge";
 import type { Product } from "@/types/product";
 

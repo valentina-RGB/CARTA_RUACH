@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { Badge } from '@/common/ui/badge'
+import { OptimizedImage } from '@/components/OptimizedImage'
 import type { Product } from '@/types/product'
 
 interface ProductCardProps {
@@ -30,11 +31,13 @@ export const ProductCard = ({ product, onProductClick, index }: ProductCardProps
     >
       {/* Image Section */}
       <div className="relative overflow-hidden h-48">
-        <motion.img
+        <OptimizedImage
           src={product.image}
           alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-          whileHover={{ scale: 1.1 }}
+          className="group-hover:scale-110 transition-transform duration-700"
+          width={400}
+          height={400}
+          loading={index < 3 ? 'eager' : 'lazy'}
         />
         
         {/* Overlay Gradient */}
@@ -71,7 +74,7 @@ export const ProductCard = ({ product, onProductClick, index }: ProductCardProps
         </motion.h3>
         
         {/* Description hint */}
-        <p className="text-amber-700/70 text-sm mb-4 line-clamp-2">
+        <p className="text-amber-700 text-sm mb-4 line-clamp-2">
             {product.description}
         </p>
         
@@ -82,7 +85,7 @@ export const ProductCard = ({ product, onProductClick, index }: ProductCardProps
              {product.price ?formatPrice(product.price): "Ver detalles"}
             </span>
             {product.originalPrice && (
-              <span className="text-amber-600/50 text-sm line-through">
+              <span className="text-amber-600 text-sm line-through">
                 ${product.originalPrice.toFixed(2)}
               </span>
             )}
@@ -90,7 +93,7 @@ export const ProductCard = ({ product, onProductClick, index }: ProductCardProps
           
           {/* Weight/Portion */}
           {/* <div className="text-right">
-            <span className="text-amber-700/70 text-xs block">
+            <span className="text-amber-800 text-xs block">
               Porción
             </span>
             <span className="text-amber-800 text-sm font-medium">
