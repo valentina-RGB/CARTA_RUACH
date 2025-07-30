@@ -1,6 +1,7 @@
 import { GoogleSpreadsheet } from "google-spreadsheet";
 import type { Product } from "@/types/product";
 import type { Category } from "@/types/category";
+import { parseAvailability } from "@/utils/parserAvailability"; // Asegúrate de que esta función esté definida
 
 // REEMPLAZA CON TU ID REAL DE GOOGLE SHEETS
 const SPREADSHEET_ID = import.meta.env.VITE_SPREADSHEET_ID; // 👈 Cambia esto por tu ID real
@@ -264,7 +265,7 @@ class SheetsService {
             large: row.get("sizeLarge") ,
         },
         ingredients: this.parseIngredients(row.get("ingredients")),
-        isAvailable: this.parseAvailability(row.get("isAvailable")),
+        isAvailable: parseAvailability(row.get("isAvailable")),
         isFeatured: row.get("isFeatured") === "true",
         originalPrice: parseFloat(row.get("originalPrice")) || undefined,
         discount: parseInt(row.get("discount")) || undefined,
@@ -299,21 +300,6 @@ class SheetsService {
     }
   }
 
-  private parseAvailability(availabilityStr: string): boolean {
-    if (!availabilityStr) return true; // Por defecto disponible si está vacío
-    
-    const cleaned = availabilityStr.toString().toLowerCase().trim();
-    
-    console.log('🔍 parseAvailability - Valor original:', availabilityStr);
-    console.log('🔍 parseAvailability - Valor limpio:', cleaned);
-    
-    // Valores que significan NO disponible
-    const falseValues = ['false', 'no', '0', 'off', 'disabled', 'unavailable'];
-    
-    const isNotAvailable = falseValues.some(falseVal => cleaned === falseVal);
-    
-    return !isNotAvailable;
-  }
 
    clearAllCaches(): void {
     this.productsCache = null;

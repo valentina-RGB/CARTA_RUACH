@@ -36,7 +36,7 @@ export const ProductCard = memo(({ product, onProductClick, index }: ProductCard
       whileTap={{ scale: 0.98 }}
     >
       {/* Image Section */}
-      <div className="relative overflow-hidden h-60">
+      <div className="relative overflow-hidden h-56">
         <OptimizedImage
           src={product.image}
           alt={product.name}

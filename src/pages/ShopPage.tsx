@@ -92,7 +92,7 @@ export default function ShopPage() {
 
             <button
               onClick={refreshProducts}
-              className="p-2 rounded-lg hover:bg-gray-800 transition-colors duration-200"
+              className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
               title="Actualizar menú"
             >
               <RefreshCw
