@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
+import { useEffect } from "react";
 import { X } from "@/common/ui/icons";
 import { Badge } from "@/common/ui/badge";
 import type { Product } from "@/types/product";
@@ -20,6 +21,37 @@ export const ProductDetailModal = ({
     const config = useAppConfig();
 
     console.log(config, 'color obton')
+
+  // 🔥 Hook para interceptar el botón "atrás" en móviles
+  useEffect(() => {
+    if (!isOpen) return;
+
+    // Cuando se abre el modal, agregar una entrada al historial
+    const handleBackButton = () => {
+      onClose(); // Cerrar modal en lugar de salir de la página
+    };
+
+    // Agregar entrada ficticia al historial cuando se abre el modal
+    window.history.pushState({ modalOpen: true }, "", window.location.href);
+
+    // Escuchar el evento "popstate" (botón atrás)
+    window.addEventListener("popstate", handleBackButton);
+
+    // Cleanup: remover el listener cuando se cierre el modal
+    return () => {
+      window.removeEventListener("popstate", handleBackButton);
+    };
+  }, [isOpen, onClose]);
+
+  // 🔥 Función para cerrar modal (limpia historial)
+  const handleClose = () => {
+    // Si hay una entrada de modal en el historial, ir atrás para limpiarla
+    if (window.history.state?.modalOpen) {
+      window.history.back();
+    } else {
+      onClose();
+    }
+  };
   
   // Función para formatear precios colombianos
   const formatPrice = (price: number) => {
@@ -96,7 +128,7 @@ export const ProductDetailModal = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={handleClose}
           />
 
           {/* Modal */}
@@ -111,7 +143,7 @@ export const ProductDetailModal = ({
               {/* Header */}
               <div className="flex justify-between items-center p-4 border-b">
                 <motion.button
-                  onClick={onClose}
+                  onClick={handleClose}
                   className="p-2 hover:bg-gray-100 rounded-full"
                   whileTap={{ scale: 0.95 }}
                 >
@@ -293,7 +325,7 @@ export const ProductDetailModal = ({
               >
                 <div className="flex items-center justify-center">
                   <motion.button
-                    onClick={onClose}
+                    onClick={handleClose}
                     className={`hover:bg-purple-50 text-white px-8 py-3 rounded-full font-medium transition-colors`}
                     whileTap={{ scale: 0.98 }}
                     style={{
