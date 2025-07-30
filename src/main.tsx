@@ -4,7 +4,14 @@ import { RouterProvider } from 'react-router-dom'
 import './index.css'
 import {registerSW}  from 'virtual:pwa-register'
 import { router } from './routes/router'
+import { setThemeColor } from './utils/themeColor'
 
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', setThemeColor);
+} else {
+  setThemeColor();
+}
 
 registerSW({
   onNeedRefresh() {

@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X } from "@/common/ui/icons";
 import { Badge } from "@/common/ui/badge";
 import type { Product } from "@/types/product";
+import { useAppConfig } from "@/hooks/useAppConfig";
 
 interface ProductDetailModalProps {
   product: Product;
@@ -15,6 +16,10 @@ export const ProductDetailModal = ({
   isOpen,
   onClose,
 }: ProductDetailModalProps) => {
+
+    const config = useAppConfig();
+
+    console.log(config, 'color obton')
   
   // Función para formatear precios colombianos
   const formatPrice = (price: number) => {
@@ -289,8 +294,11 @@ export const ProductDetailModal = ({
                 <div className="flex items-center justify-center">
                   <motion.button
                     onClick={onClose}
-                    className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-full font-medium transition-colors"
+                    className={`hover:bg-purple-50 text-white px-8 py-3 rounded-full font-medium transition-colors`}
                     whileTap={{ scale: 0.98 }}
+                    style={{
+                      background:config.colors.buttonClose
+                    }}
                   >
                     Cerrar
                   </motion.button>

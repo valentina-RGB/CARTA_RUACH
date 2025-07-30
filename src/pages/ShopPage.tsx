@@ -1,4 +1,9 @@
-import { useState, useDeferredValue, startTransition, useCallback } from "react";
+import {
+  useState,
+  useDeferredValue,
+  startTransition,
+  useCallback,
+} from "react";
 import { motion } from "framer-motion";
 import { RefreshCw } from "@/common/ui/icons";
 import type { Product } from "@/types/product";
@@ -14,17 +19,12 @@ export default function ShopPage() {
     useState<ProductCategory>("all");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  const {
-    products,
-    categories,
-    loading,
-    validCategories,
-    refreshProducts,
-  } = useProducts(); // 👈 Usar Google Sheets
-  
+  const { products, categories, loading, validCategories, refreshProducts } =
+    useProducts(); // 👈 Usar Google Sheets
+
   // Optimización: Usar deferred value para filtros no críticos
   const deferredCategory = useDeferredValue(selectedCategory);
-  
+
   // const [pay, setpay] = useState(false)
   // const { cartItems, addToCart } = useCart()
 
@@ -38,7 +38,7 @@ export default function ShopPage() {
   const handleProductSelect = useCallback((product: Product) => {
     setSelectedProduct(product);
   }, []);
-  
+
   const handleCategoryChange = useCallback((category: ProductCategory) => {
     startTransition(() => {
       setSelectedCategory(category);
@@ -71,59 +71,70 @@ export default function ShopPage() {
       >
         <div className="relative px-6 py-2">
           <div className="flex items-center justify-between">
-       
-
-        <motion.div
-          className="text-center flex-1"
-          initial={{ y: 10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.4 }}
-        >
-            {/* <h1 className="text-xl font-boldcuale text-white/80 mb-1 tracking-wide">
+            <motion.div
+              className="text-center flex-1"
+              initial={{ y: 10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.4 }}
+            >
+              {/* <h1 className="text-xl font-boldcuale text-white/80 mb-1 tracking-wide">
             RESTAURANTE RUACH
             </h1> */}
-          <div className="flex items-center justify-center  gap-2">
-            <div className="bg-green-400 flex items-center p-2  gap-2 rounded-2xl">
-              <div className="w-2 h-2 bg-green-700 rounded-full animate-pulse"></div>
-            <span className="text-green-950 text-xs font-medium">
-          Menú en tiempo real
-            </span>
-            </div>
-          </div>
-        </motion.div>
+              <div className="flex items-center justify-center  gap-2">
+                <div className="bg-green-400 flex items-center p-2  gap-2 rounded-2xl">
+                  <div className="w-2 h-2 bg-green-200 rounded-full animate-pulse"></div>
+                  <span className="text-green-950 text-xs font-medium">
+                    Menú en tiempo real
+                  </span>
+                </div>
+              </div>
+            </motion.div>
 
-        <button
-          onClick={refreshProducts}
-          className="p-2 rounded-lg hover:bg-gray-800 transition-colors duration-200"
-          title="Actualizar menú"
-        >
-          <RefreshCw
-            className={`w-4 h-4 text-gray-700 ${
-          loading ? "animate-spin" : ""
-            }`}
-          />
-        </button>
+            <button
+              onClick={refreshProducts}
+              className="p-2 rounded-lg hover:bg-gray-800 transition-colors duration-200"
+              title="Actualizar menú"
+            >
+              <RefreshCw
+                className={`w-4 h-4 text-gray-700 ${
+                  loading ? "animate-spin" : ""
+                }`}
+              />
+            </button>
           </div>
         </div>
       </motion.div>
 
       {/* Categories Section */}
-      <div className="relative bg-white border-b border-amber-100">
-        <div className="absolute inset-0 bg-gradient-to-r" />
-        <motion.div
-          className="relative px-6 py-6"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
-        >
+      <section
+        className="sticky top-[0px] z-30 bg-white/95 backdrop-blur-md border-b border-amber-50 shadow-sm"
+      >
+        <div className="relative px-6 py-4">
           {validCategories.length > 0 && (
             <div className="max-w-7xl mx-auto">
-              {/* <div className="text-center mb-4">
-                <h3 className="text-lg font-semibold text-amber-900 mb-1">
-                  Categorías
-                </h3>
-                <div className="w-16 h-px bg-amber-300 mx-auto" />
-              </div> */}
+              {/* Section Title */}
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <h3 className="text-lg font-semibold text-amber-900">
+                    Categorías
+                  </h3>
+                  <span className="text-sm text-amber-600 bg-amber-50 px-2 py-1 rounded-full">
+                    {validCategories.length}
+                  </span>
+                </div>
+
+                {/* Filter indicator */}
+                {selectedCategory !== "all" && (
+                  <button
+                    onClick={() => handleCategoryChange("all")}
+                    className="text-sm text-amber-600 hover:text-amber-800 flex items-center gap-1 transition-colors"
+                  >
+                    <span>Ver todos</span>
+                    <span className="text-xs">✕</span>
+                  </button>
+                )}
+              </div>
+
               <CategoryFilter
                 selectedCategory={currentCategory}
                 onCategoryChange={handleCategoryChange}
@@ -131,9 +142,8 @@ export default function ShopPage() {
               />
             </div>
           )}
-        </motion.div>
-      </div>
-
+        </div>
+      </section>
       {/* Products Section */}
       <div className="relative">
         {/* Section Background */}

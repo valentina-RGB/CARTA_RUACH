@@ -1,7 +1,7 @@
 export interface Category {
   id: string
   name: string
-  icon?: string
+  icon?: string | React.ReactNode
   color?: string
   description?: string
 }

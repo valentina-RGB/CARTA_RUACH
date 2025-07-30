@@ -3,13 +3,18 @@ import type { Product } from "@/types/product";
 import type { Category } from "@/types/category";
 
 // REEMPLAZA CON TU ID REAL DE GOOGLE SHEETS
-const SPREADSHEET_ID = "1LyOCdes0cdgrYZIGPTeeSSWiKciJfPgLYaS7Mtxda5o"; // 👈 Cambia esto por tu ID real
+const SPREADSHEET_ID = import.meta.env.VITE_SPREADSHEET_ID; // 👈 Cambia esto por tu ID real
 
 class SheetsService {
   private doc: GoogleSpreadsheet;
   private productsCache: { data: Product[], timestamp: number } | null = null;
   private categoriesCache: { data: Category[], timestamp: number } | null = null;
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
+
+ // 🔄 NUEVO: Cache offline localStorage
+  private readonly OFFLINE_CACHE_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 días
+  private readonly PRODUCTS_STORAGE_KEY = 'products_offline';
+  private readonly CATEGORIES_STORAGE_KEY = 'categories_offline';
 
   constructor() {
     this.doc = new GoogleSpreadsheet(SPREADSHEET_ID, {
@@ -20,6 +25,65 @@ class SheetsService {
   private isCacheValid(cache: { timestamp: number } | null): boolean {
     if (!cache) return false;
     return Date.now() - cache.timestamp < this.CACHE_DURATION;
+  }
+
+  
+  // 🔄 NUEVO: Verificar cache offline
+  private isOfflineCacheValid(cache: { timestamp: number } | null): boolean {
+    if (!cache) return false;
+    return Date.now() - cache.timestamp < this.OFFLINE_CACHE_DURATION;
+  }
+
+   // 🔄 NUEVO: Cargar desde localStorage
+  private loadFromOfflineCache<T>(storageKey: string): T[] | null {
+    try {
+      const stored = localStorage.getItem(storageKey);
+      if (!stored) return null;
+
+      const parsed = JSON.parse(stored);
+      if (this.isOfflineCacheValid(parsed)) {
+        console.log(`💾 Cache offline válido (${storageKey})`);
+        return parsed.data;
+      } else {
+        console.log(`🗑️ Cache offline expirado (${storageKey})`);
+        localStorage.removeItem(storageKey);
+        return null;
+      }
+    } catch (error) {
+      console.error(`❌ Error en cache offline (${storageKey}):`, error);
+      localStorage.removeItem(storageKey);
+      return null;
+    }
+  }
+
+   // 🔄 NUEVO: Guardar en localStorage
+  private saveToOfflineCache<T>(data: T[], storageKey: string): void {
+    try {
+      const dataToStore = {
+        data,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(storageKey, JSON.stringify(dataToStore));
+      console.log(`💾 Guardado en cache offline (${storageKey})`);
+    } catch (error) {
+      console.error(`❌ Error guardando cache offline (${storageKey}):`, error);
+    }
+  }
+
+  // 🔄 NUEVO: Detectar conexión
+  private async isOnline(): Promise<boolean> {
+    if (!navigator.onLine) return false;
+    
+    try {
+       await fetch('https://www.google.com/favicon.ico', {
+        method: 'HEAD',
+        mode: 'no-cors',
+        cache: 'no-cache'
+      });
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   private convertDriveImageUrl(url: string): string {
@@ -68,10 +132,19 @@ class SheetsService {
 
   async loadCategories(): Promise<Category[]> {
     try {
-      // Verificar cache primero
-      if (this.isCacheValid(this.categoriesCache)) {
-        console.log("📋 Usando categorías desde cache");
-        return this.categoriesCache!.data;
+
+      const online = await this.isOnline();
+
+      if (!online) {
+        console.log("🔌 Sin internet - intentando cache offline...");
+        const offlineData = this.loadFromOfflineCache<Category>(this.CATEGORIES_STORAGE_KEY);
+        if (offlineData) {
+          this.categoriesCache = { data: offlineData, timestamp: Date.now() };
+          return offlineData;
+        } else {
+          console.log("⚠️ No hay cache offline, usando categorías por defecto");
+          return this.getDefaultCategories();
+        }
       }
 
       await this.doc.loadInfo();
@@ -82,11 +155,11 @@ class SheetsService {
       const categorySheet =
         this.doc.sheetsByTitle["Categorías"] || this.doc.sheetsByIndex[1];
 
-      if (!categorySheet) {
-        console.log(
-          "⚠️ No se encontró hoja de categorías, usando categorías por defecto"
-        );
-        return this.getDefaultCategories();
+        if (!categorySheet) {
+        console.log("⚠️ No se encontró hoja de categorías, usando categorías por defecto");
+        const defaultCategories = this.getDefaultCategories();
+        this.saveToOfflineCache(defaultCategories, this.CATEGORIES_STORAGE_KEY); // 🔄 NUEVO
+        return defaultCategories;
       }
 
       await categorySheet.loadHeaderRow();
@@ -95,13 +168,15 @@ class SheetsService {
       console.log("📂 Categorías encontradas:", rows.length);
 
       if (rows.length === 0) {
-        return this.getDefaultCategories();
+         const defaultCategories = this.getDefaultCategories();
+        this.saveToOfflineCache(defaultCategories, this.CATEGORIES_STORAGE_KEY); // 🔄 NUEVO
+        return defaultCategories;
       }
 
       const categories = rows.map((row, index) => ({
         id: row.get("id") || `category-${Date.now()}-${index}`,
         name: row.get("name") || "",
-        icon: row.get("icon") || "🍽️",
+        icon: this.convertDriveImageUrl(row.get("icon")) || "🍽️",
         color: row.get("color") || "#f97316",
         description: row.get("description") || "",
       }));
@@ -111,11 +186,18 @@ class SheetsService {
         data: categories,
         timestamp: Date.now()
       };
+       this.saveToOfflineCache(categories, this.CATEGORIES_STORAGE_KEY); // 🔄 NUEVO
 
       return categories;
     } catch (error) {
-      console.error("❌ Error loading categories from Google Sheets:", error);
+           // 🔄 NUEVO: Fallback a cache offline
+      const offlineData = this.loadFromOfflineCache<Category>(this.CATEGORIES_STORAGE_KEY);
+      if (offlineData) {
+        console.log("🔄 Usando cache offline como fallback");
+        return offlineData;
+      }
       return this.getDefaultCategories();
+
     }
   }
 
@@ -123,7 +205,7 @@ class SheetsService {
     return [
       {
         id: "all",
-        name: "Todo",
+        name: "Todos",
         icon: "🍽️",
         color: "#f97316",
         description: "Todos los productos",
@@ -138,6 +220,20 @@ class SheetsService {
       if (this.isCacheValid(this.productsCache)) {
         console.log("📋 Usando productos desde cache");
         return this.productsCache!.data;
+      }
+
+       const online = await this.isOnline();
+      
+      if (!online) {
+        console.log("🔌 Sin internet - intentando cache offline...");
+        const offlineData = this.loadFromOfflineCache<Product>(this.PRODUCTS_STORAGE_KEY);
+        if (offlineData) {
+          this.productsCache = { data: offlineData, timestamp: Date.now() };
+          return offlineData;
+        } else {
+          console.log("⚠️ No hay cache offline de productos");
+          return [];
+        }
       }
 
       // Autenticación simple usando API key pública
@@ -179,16 +275,22 @@ class SheetsService {
         data: products,
         timestamp: Date.now()
       };
+       this.saveToOfflineCache(products, this.PRODUCTS_STORAGE_KEY); // 🔄 NUEVO
 
       return products;
     } catch (error) {
-      console.error("Error loading from Google Sheets:", error);
-      // Fallback a datos mock si falla
+       // 🔄 NUEVO: Fallback a cache offline
+      const offlineData = this.loadFromOfflineCache<Product>(this.PRODUCTS_STORAGE_KEY);
+      if (offlineData) {
+        console.log("🔄 Usando cache offline como fallback");
+        return offlineData;
+      }
       return [];
     }
   }
 
-  private parseIngredients(ingredientsStr: string) {
+
+   private parseIngredients(ingredientsStr: string) {
     if (!ingredientsStr) return [];
     try {
       return ingredientsStr.split(",").map((ing) => ({ name: ing.trim() }));
@@ -196,6 +298,32 @@ class SheetsService {
       return [];
     }
   }
+
+   clearAllCaches(): void {
+    this.productsCache = null;
+    this.categoriesCache = null;
+    localStorage.removeItem(this.PRODUCTS_STORAGE_KEY);
+    localStorage.removeItem(this.CATEGORIES_STORAGE_KEY);
+    console.log("🗑️ Todos los caches limpiados");
+  }
+
+  getCacheStatus() {
+    return {
+      memory: {
+        products: this.productsCache ? this.isCacheValid(this.productsCache) : false,
+        categories: this.categoriesCache ? this.isCacheValid(this.categoriesCache) : false
+      },
+      offline: {
+        products: !!this.loadFromOfflineCache<Product>(this.PRODUCTS_STORAGE_KEY),
+        categories: !!this.loadFromOfflineCache<Category>(this.CATEGORIES_STORAGE_KEY)
+      },
+      online: navigator.onLine
+    };
+  }
+
+ 
 }
+
+
 
 export const sheetsService = new SheetsService();

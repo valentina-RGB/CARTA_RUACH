@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { Badge } from '@/common/ui/badge'
 import { OptimizedImage } from '@/components/OptimizedImage'
 import type { Product } from '@/types/product'
+import { memo, useMemo } from 'react'
 
 interface ProductCardProps {
   product: Product
@@ -18,10 +19,16 @@ interface ProductCardProps {
     }).format(price)
   }
 
-export const ProductCard = ({ product, onProductClick, index }: ProductCardProps) => {
+export const ProductCard = memo(({ product, onProductClick, index }: ProductCardProps) => {
+
+    const formattedPrice = useMemo(() => {
+    return product.price ? formatPrice(product.price) : "Ver detalles"
+  }, [product.price])
+
+
   return (
     <motion.div
-      className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 cursor-pointer border"
+      className="group bg-white h-[60vh] lg:min-h-[35vh] xl:min-h-[57vh] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 cursor-pointer border"
       onClick={() => onProductClick(product)}
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
@@ -30,7 +37,7 @@ export const ProductCard = ({ product, onProductClick, index }: ProductCardProps
       whileTap={{ scale: 0.98 }}
     >
       {/* Image Section */}
-      <div className="relative overflow-hidden h-48">
+      <div className="relative overflow-hidden h-56">
         <OptimizedImage
           src={product.image}
           alt={product.name}
@@ -81,8 +88,8 @@ export const ProductCard = ({ product, onProductClick, index }: ProductCardProps
         {/* Price Section */}
         <div className="flex items-center justify-between">
           <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-amber-800">
-             {product.price ?formatPrice(product.price): "Ver detalles"}
+            <span className={`${!product.price ? "text-[18px] text-amber-600":"text-2xl text-amber-800"} font-bold `}>
+             {formattedPrice}
             </span>
             {product.originalPrice && (
               <span className="text-amber-600 text-sm line-through">
@@ -90,25 +97,15 @@ export const ProductCard = ({ product, onProductClick, index }: ProductCardProps
               </span>
             )}
           </div>
-          
-          {/* Weight/Portion */}
-          {/* <div className="text-right">
-            <span className="text-amber-800 text-xs block">
-              Porción
-            </span>
-            <span className="text-amber-800 text-sm font-medium">
-              {product.weight}
-            </span>
-          </div> */}
         </div>
         
         {/* Action Indicator */}
         <motion.div 
-          className="mt-4 pt-4 border-t border-amber-100 flex items-center justify-center text-amber-600 text-sm font-medium opacity-0 group-hover:opacity-100 transition-all duration-300"
+          className="mt-4 pt-4 border-t border-amber-100 flex items-center justify-center text-amber-600 text-[16px] font-medium opacity-0 group-hover:opacity-100 transition-all duration-300"
           initial={{ y: 10 }}
           whileHover={{ y: 0 }}
         >
-          <span>Ver detalles</span>
+          <span >Ver detalles</span>
           <motion.span 
             className="ml-2"
             animate={{ x: [0, 5, 0] }}
@@ -120,4 +117,4 @@ export const ProductCard = ({ product, onProductClick, index }: ProductCardProps
       </div>
     </motion.div>
   )
-}
+});
