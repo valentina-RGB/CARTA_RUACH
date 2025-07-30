@@ -76,8 +76,7 @@ export const CategoryFilter = ({
             {/* Active Indicator */}
             {isSelected && (
               <motion.div
-                className="mt-1 w-1 h-1 rounded-full"
-                style={{ backgroundColor: config.colors.categories }}
+                className="mt-1 w-1 h-1 rounded-full bg-amber-500"
                 layoutId="activeCategory"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
