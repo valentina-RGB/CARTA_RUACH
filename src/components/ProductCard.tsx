@@ -25,10 +25,9 @@ export const ProductCard = memo(({ product, onProductClick, index }: ProductCard
     return product.price ? formatPrice(product.price) : "Ver detalles"
   }, [product.price])
 
-
   return (
     <motion.div
-      className="group bg-white h-[60vh] lg:min-h-[35vh] xl:min-h-[57vh] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 cursor-pointer border"
+      className="group bg-white h-[56vh] lg:min-h-[35vh] xl:min-h-[65vh] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 cursor-pointer border"
       onClick={() => onProductClick(product)}
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
@@ -37,7 +36,7 @@ export const ProductCard = memo(({ product, onProductClick, index }: ProductCard
       whileTap={{ scale: 0.98 }}
     >
       {/* Image Section */}
-      <div className="relative overflow-hidden h-56">
+      <div className="relative overflow-hidden h-72">
         <OptimizedImage
           src={product.image}
           alt={product.name}

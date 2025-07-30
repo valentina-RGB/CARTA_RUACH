@@ -6,7 +6,7 @@ import type { Product } from "@/types/product";
 import type { Category } from "@/types/category";
 
 export const useProducts = () => {
-  const [products, setProducts] = useState<Product[]>(mockProducts); // Empezar con mock data
+  const [products, setProducts] = useState<Product[]>(mockProducts); 
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -17,6 +17,10 @@ export const useProducts = () => {
       setLoading(true);
       setError(null);
 
+      // 🆕 Limpiar caché antes de recargar
+      const { sheetsService } = await import("@/data/Google_sheetService");
+      sheetsService.clearAllCaches();
+
       const [sheetsCategories, sheetsProducts] = await Promise.all([
         loadCategories(),
         loadProducts(),
@@ -25,18 +29,15 @@ export const useProducts = () => {
       setCategories(sheetsCategories);
       console.log("📂 Categorías cargadas:", sheetsCategories.length);
 
-
+     
       if (sheetsProducts.length > 0) {
-        setProducts(sheetsProducts);
+        setProducts(sheetsProducts); // 👈 SIN filtrar aquí
         setUsingSheets(true);
-        console.log(
-          "✅ Productos cargados desde Google Sheets:",
-          sheetsProducts.length
-        );
-      } else {
-        setProducts(mockProducts);
-        setUsingSheets(false);
-        console.log("📋 Usando productos mock (fallback)");
+
+    } else {
+      setProducts(mockProducts); // 👈 SIN filtrar aquí tampoco
+      setUsingSheets(false);
+      console.log("📋 Usando productos mock (fallback)");
       }
     } catch (err) {
       setError("Error conectando con Google Sheets");
@@ -59,18 +60,23 @@ export const useProducts = () => {
     );
   }, [categories, products]);
 
-  // Solo cargar una vez al montar el componente
+  // 🆕 Función para obtener solo productos disponibles
+  const availableProducts = useMemo(() => {
+    return products.filter(product => product.isAvailable === true);
+  }, [products]);
+
   useEffect(() => {
     loadData();
   }, [loadData]); // 👈 loadData memoizado con useCallback
 
   return {
-    products,
+    products: availableProducts, // 👈 Devolver solo disponibles
+    allProducts: products, // 👈 Por si necesitas todos
     categories,
     loading,
     error,
     usingSheets,
     validCategories: getValidCategories,
-    refreshProducts: loadData, // 👈 Manual refresh cuando lo necesites
+    refreshProducts: loadData
   };
 };
