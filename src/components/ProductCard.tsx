@@ -43,7 +43,7 @@ export const ProductCard = memo(({ product, onProductClick, index }: ProductCard
     >
       {/* Image Section */}
       <div className="relative overflow-hidden 
-      h-36 xs:h-40 sm:h-44 md:h-48 lg:h-52 xl:h-56 2xl:h-60">
+      h-44 xs:h-40 sm:h-44 md:h-48 lg:h-52 xl:h-56 2xl:h-60">
       <OptimizedImage
         src={product.image}
         alt={product.name}
