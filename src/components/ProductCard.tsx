@@ -28,7 +28,7 @@ export const ProductCard = memo(({ product, onProductClick, index }: ProductCard
   return (
     <motion.div
       className="group bg-white w-full rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 cursor-pointer border
-      h-[45vh] min-h-[250px] max-h-[350px]
+      h-[80vh] min-h-[300px] max-h-[400px]
       sm:h-[45vh] sm:min-h-[350px] sm:max-h-[450px]
       md:h-[50vh] md:min-h-[400px] md:max-h-[500px]
       lg:h-[55vh] lg:min-h-[450px] lg:max-h-[550px]
@@ -43,7 +43,7 @@ export const ProductCard = memo(({ product, onProductClick, index }: ProductCard
     >
       {/* Image Section */}
       <div className="relative overflow-hidden 
-      h-44 xs:h-40 sm:h-44 md:h-48 lg:h-52 xl:h-56 2xl:h-60">
+      h-60 xs:h-40 sm:h-44 md:h-48 lg:h-52 xl:h-56 2xl:h-60">
       <OptimizedImage
         src={product.image}
         alt={product.name}
@@ -75,7 +75,7 @@ export const ProductCard = memo(({ product, onProductClick, index }: ProductCard
       </div>
       
       {/* Content Section */}
-      <div className="p-3 sm:p-4 md:p-5 lg:p-6 flex flex-col h-[calc(100%-9rem)] sm:h-[calc(100%-11rem)] md:h-[calc(100%-12rem)] lg:h-[calc(100%-13rem)] xl:h-[calc(100%-14rem)] 2xl:h-[calc(100%-15rem)]">
+      <div className="p-3 sm:p-4 md:p-5 lg:p-6 flex flex-col h-[calc(100%-14rem)] sm:h-[calc(100%-11rem)] md:h-[calc(100%-12rem)] lg:h-[calc(100%-13rem)] xl:h-[calc(100%-14rem)] 2xl:h-[calc(100%-15rem)]">
       {/* Title */}
       <motion.h3 
         className="font-bold text-amber-900 group-hover:text-amber-800 transition-colors mb-2
