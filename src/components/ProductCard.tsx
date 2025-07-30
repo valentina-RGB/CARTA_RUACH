@@ -26,9 +26,9 @@ export const ProductCard = memo(({ product, onProductClick, index }: ProductCard
   }, [product.price])
 
   return (
-    <motion.div
+    <motion.div 
       className="group bg-white w-full rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 cursor-pointer border
-      h-[80vh] min-h-[300px] max-h-[400px]
+      h-[80vh] min-h-[300px] max-h-[420px]
       sm:h-[45vh] sm:min-h-[350px] sm:max-h-[450px]
       md:h-[50vh] md:min-h-[400px] md:max-h-[500px]
       lg:h-[55vh] lg:min-h-[450px] lg:max-h-[550px]
@@ -79,7 +79,7 @@ export const ProductCard = memo(({ product, onProductClick, index }: ProductCard
       {/* Title */}
       <motion.h3 
         className="font-bold text-amber-900 group-hover:text-amber-800 transition-colors mb-2
-        text-sm sm:text-base md:text-lg lg:text-xl"
+        text-[16px] sm:text-base md:text-lg lg:text-xl"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2 }}

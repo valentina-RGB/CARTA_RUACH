@@ -61,7 +61,7 @@ export default function ShopPage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen"  >
       {/* Hero Header */}
       <motion.div
         className="relative dark:bg-black mx-auto rounded-md"
@@ -145,7 +145,7 @@ export default function ShopPage() {
         </div>
       </section>
       {/* Products Section */}
-      <div className="relative">
+      <div className="relative" >
         {/* Section Background */}
         <div className="absolute inset-0" />
 

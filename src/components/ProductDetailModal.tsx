@@ -119,7 +119,7 @@ export const ProductDetailModal = ({
   }
 
   return (
-    <AnimatePresence>
+    <AnimatePresence >
       {isOpen && (
         <>
           {/* Overlay */}
