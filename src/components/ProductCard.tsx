@@ -27,7 +27,7 @@ export const ProductCard = memo(({ product, onProductClick, index }: ProductCard
 
   return (
     <motion.div
-      className="group bg-white h-[56vh] lg:min-h-[35vh] xl:min-h-[65vh] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 cursor-pointer border"
+      className="group bg-white h-[60vh] lg:min-h-[35vh] xl:min-h-[65vh] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 cursor-pointer border"
       onClick={() => onProductClick(product)}
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
